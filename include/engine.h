@@ -12,6 +12,8 @@
 #define WINDOW_HEIGHT 900
 #define WINDOW_WIDTH 1200
 
+#define CLICK_RADIUS 15.0f
+
 // TODO: rethink about MAX_PARTICLE (currently leave it here to test more)
 #define MAX_PARTICLES 2000
 #define PARTICLE_SIZE 16
@@ -35,6 +37,8 @@ typedef struct {
 // memory for particle system
 particleSystem *initParticleSys(uint32_t inputCap);
 void destroyParticleSys(particleSystem *pSystem);
+void createParticle(particleSystem *pSystem, float x, float y);
+void annihilateParticle(particleSystem *pSystem, float x, float y);
 
 // simulate the physics
 void updatePhysics(particleSystem *system, const simConfig *config);

@@ -38,6 +38,45 @@ particleSystem *initParticleSys(uint32_t inputCap)
     return pResultSys;
 }
 
+void createParticle(particleSystem *pSystem, float x, float y)
+{
+    uint16_t currCount = pSystem->count;
+    if (currCount >= MAX_PARTICLES)
+    {
+        return;
+    }
+    pSystem->count++;
+    pSystem->pX[currCount + 1] = x;
+    pSystem->pY[currCount + 1] = y;
+}
+
+void annihilateParticle(particleSystem *pSystem, float x, float y)
+{
+    uint16_t currCount = pSystem->count;
+    if (currCount == 0)
+    {
+        return;
+    }
+
+    // detect if the mouse clicked on any particle
+    for (uint16_t i = 0; i < currCount; i++)
+    {
+        float dstToMouse = hypotf(pSystem->pX[i] - x, pSystem->pY[i] - y);
+
+        // if detected a "victim"
+        if (dstToMouse <= CLICK_RADIUS)
+        {
+            uint16_t newCount = pSystem->count - 1;
+            
+            pSystem->pX[i] = pSystem->pX[newCount];
+            pSystem->pY[i] = pSystem->pY[newCount];
+            pSystem->count--;
+            
+            return;
+        }
+    }
+}
+
 void destroyParticleSys(particleSystem *pSystem)
 {
     if (pSystem == NULL)

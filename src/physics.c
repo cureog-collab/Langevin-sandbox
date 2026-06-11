@@ -25,13 +25,13 @@ void updatePhysics(particleSystem *system, const simConfig *config)
         jumpX += config->Jy * LORENTZ_SCALE;
         jumpY -= config->Jx * LORENTZ_SCALE;
 
-        // wrap-around at edges
-        system->pX[particleIdx] -= WINDOW_WIDTH * floorf(system->pX[particleIdx] * INV_WINDOW_WIDTH);
-        system->pY[particleIdx] -= WINDOW_HEIGHT * floorf(system->pY[particleIdx] * INV_WINDOW_HEIGHT);
-
         // asign jump to the current position of the pariticle
         system->pX[particleIdx] += jumpX;
         system->pY[particleIdx] += jumpY;
+
+        // wrap-around at edges
+        system->pX[particleIdx] -= WINDOW_WIDTH * floorf(system->pX[particleIdx] * INV_WINDOW_WIDTH);
+        system->pY[particleIdx] -= WINDOW_HEIGHT * floorf(system->pY[particleIdx] * INV_WINDOW_HEIGHT);
     }
 }
 

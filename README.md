@@ -13,6 +13,8 @@ make
 * Camera panning and zooming.
 * Press 'SPACE' to reset camera settings.
 * Press 'S' to pause/ resume the simulation.
+* Right-click to spawn a new particle at the cursor's location.
+* 'CTRL' + right-click to annihilate a particle under the cursor.
 
 ## Flags
 * -c **(Initial Particle Count)**: The number of vortices generated at startup.

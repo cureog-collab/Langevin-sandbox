@@ -18,7 +18,7 @@ bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture *
         printf("Error: failed to generate window!\n");
         return false;
     }
-    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_PRESENTVSYNC);
+    *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
     if (*renderer == NULL)
     {
         printf("Error: failed to generate renderer!\n");

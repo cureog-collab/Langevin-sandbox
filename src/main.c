@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 
@@ -17,15 +18,18 @@
 
 int main(int argc, char *argv[])
 {
-    // default values ===================================================================
+    srand(time(NULL));
+
+    // default values =====================================================================
     uint16_t initialCount = 20;
     simConfig mainConfig = {
         4.2f, // K
         0.0f, // (x10^3)A/m2
         1.0f // (x10^3)A/m2
     };
+    // =====================================================================================
 
-    // check input command line arguments ================================================
+    // check input command line arguments ==================================================
     int opt;
     while ((opt = getopt(argc, argv, VALID_FLAGS)) != -1)
     {
@@ -135,8 +139,9 @@ int main(int argc, char *argv[])
             }
         }
     }
+    // =====================================================================================
 
-    // intialize the engine ===============================================================
+    // intialize the engine ================================================================
     // initialize SDL-related stuff
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -153,8 +158,7 @@ int main(int argc, char *argv[])
         printf("Error: failed to initiate mainWindow and mainRenderer!\n");
         return 1;
     }
-
-    srand(time(NULL));
+    // ====================================================================================
 
     // initialize system of particles =====================================================
     particleSystem *mainParticleSys = initParticleSys(MAX_PARTICLES);
@@ -172,8 +176,9 @@ int main(int argc, char *argv[])
         mainParticleSys->pY[i] = ((float)rand() / RAND_MAX) * WINDOW_HEIGHT;
         mainParticleSys->count++;
     }
+    // =====================================================================================
 
-    // main program loop ==================================================================
+    // main program loop ===================================================================
     camera mainCam;
     SDL_Point origin = {0, 0};
     resetCamera(&mainCam, origin);
@@ -207,6 +212,29 @@ int main(int argc, char *argv[])
                     }
                     break;
                 }
+
+                case SDL_MOUSEBUTTONDOWN:
+                {
+                    if (mainEvent.button.button == SDL_BUTTON_RIGHT)
+                    {
+                        int mouseX = mainEvent.button.x;
+                        int mouseY = mainEvent.button.y;
+
+                        float worldX = (mouseX - mainCam.camPos.x) / mainCam.zoom;
+                        float worldY = (mouseY - mainCam.camPos.y) / mainCam.zoom;
+                        if (SDL_GetModState() & KMOD_CTRL)
+                        {
+                            annihilateParticle(mainParticleSys, worldX, worldY);
+                            break;
+                        }
+                        else
+                        {
+                            createParticle(mainParticleSys, worldX, worldY);
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
 
             updateViewport(&mainCam, &mainEvent);
@@ -214,12 +242,10 @@ int main(int argc, char *argv[])
 
         if (!isPausing)
         {
-            // TODO
             // physics stuff
             updatePhysics(mainParticleSys, &mainConfig);
         }
 
-        // TODO
         // graphic stuff
         SDL_SetRenderDrawColor(mainRenderer, 145, 205, 235, 255); 
         SDL_RenderClear(mainRenderer);
