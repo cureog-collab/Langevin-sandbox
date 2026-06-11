@@ -13,7 +13,7 @@
 #define WINDOW_WIDTH 1200
 
 // TODO: rethink about MAX_PARTICLE (currently leave it here to test more)
-#define MAX_PARTICLES 4000
+#define MAX_PARTICLES 2000
 #define PARTICLE_SIZE 16
 
 #define MAX_SUPERCONDUCTING_TEMPERATURE 150 // K
