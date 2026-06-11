@@ -19,6 +19,10 @@ void updatePhysics(particleSystem *system, float temperature)
         // asign jump to the current position of the pariticle
         system->pX[particleIdx] += jumpX;
         system->pY[particleIdx] += jumpY;
+
+        // wrap-around at edges
+        system->pX[particleIdx] -= WINDOW_WIDTH * floorf(system->pX[particleIdx] / WINDOW_WIDTH);
+        system->pY[particleIdx] -= WINDOW_HEIGHT * floorf(system->pY[particleIdx] / WINDOW_HEIGHT);
     }
 }
 
@@ -34,6 +38,7 @@ static inline void getThermalNoise(float *jumpX, float *jumpY, float temperature
     float u2 = ((float)rand() / RAND_MAX);
 
     float magnitude = sqrtf(-2 * logf(u1)) * temperature;
-    *jumpX = (rand() % 2 == 0) ? *jumpX + magnitude * cosf(u2) * SCALE : *jumpX - magnitude * cosf(u2) * SCALE;
-    *jumpY = (rand() % 2 == 0) ? *jumpY + magnitude * sinf(u2) * SCALE : *jumpY - magnitude * sinf(u2) * SCALE;
+    float angle = u2 * 2 * (float)M_PI;
+    *jumpX += magnitude * cosf(angle) * SCALE;
+    *jumpY += magnitude * sinf(angle) * SCALE;
 }
