@@ -51,12 +51,31 @@ bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture *
     {
         for (int x = 0; x < PARTICLE_SIZE; x++)
         {
-            float dst = hypotf(x - centerPos, y - centerPos);
+            float dx = x - centerPos;
+            float dy = y - centerPos;
+            float distSquared = dx * dx + dy * dy;
 
             // hash
-            int hashIndex = y * PARTICLE_SIZE + x;
+            int pixelIndex = y * PARTICLE_SIZE + x;
 
-            pixels[hashIndex] = (dst <= particleRadius) ? 0xF9F8F6FF : 0x00000000;
+            if (distSquared <= particleRadius * particleRadius)
+            {
+                // calculate distance to the centerPos to make gradient color
+                float dist = sqrtf(distSquared);
+                float alphaFactor = 1.0f - (dist / particleRadius);
+                
+                // gradient
+                uint8_t alpha = (uint8_t)(255.0f * powf(alphaFactor, 0.5f)); 
+                uint8_t r = 10;
+                uint8_t g = 25;
+                uint8_t b = 45;
+                pixels[pixelIndex] = (r << 24) | (g << 16) | (b << 8) | alpha;
+            }
+            else
+            {
+                // outside of the vortex's radius entirely
+                pixels[pixelIndex] = 0x00000000;
+            }
         }
     }
 
@@ -80,10 +99,10 @@ bool renderParticles(SDL_Renderer *renderer, SDL_Texture *texture, particleSyste
             int iIdx = i * 6;
 
             // color
-            verts[vIdx + 0].color = (SDL_Color){249, 248, 246, 255};
-            verts[vIdx + 1].color = (SDL_Color){249, 248, 246, 255};
-            verts[vIdx + 2].color = (SDL_Color){249, 248, 246, 255};
-            verts[vIdx + 3].color = (SDL_Color){249, 248, 246, 255};
+            verts[vIdx + 0].color = (SDL_Color){255, 255, 255, 255};
+            verts[vIdx + 1].color = (SDL_Color){255, 255, 255, 255};
+            verts[vIdx + 2].color = (SDL_Color){255, 255, 255, 255};
+            verts[vIdx + 3].color = (SDL_Color){255, 255, 255, 255};
 
             // coordinates
             verts[vIdx + 0].tex_coord = (SDL_FPoint){0.0f, 0.0f}; // top-left

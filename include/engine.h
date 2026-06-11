@@ -14,7 +14,7 @@
 
 // TODO: rethink about MAX_PARTICLE (currently leave it here to test more)
 #define MAX_PARTICLES 4000
-#define PARTICLE_SIZE 8
+#define PARTICLE_SIZE 16
 
 #define MAX_SUPERCONDUCTING_TEMPERATURE 150 // K
 #define MAX_CURRENT_DENSITY 50 // (x10^3) A/m2

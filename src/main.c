@@ -221,7 +221,7 @@ int main(int argc, char *argv[])
 
         // TODO
         // graphic stuff
-        SDL_SetRenderDrawColor(mainRenderer, 15, 15, 15, 255); 
+        SDL_SetRenderDrawColor(mainRenderer, 145, 205, 235, 255); 
         SDL_RenderClear(mainRenderer);
 
         renderParticles(mainRenderer, particleTexture, mainParticleSys, &mainCam);
