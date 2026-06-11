@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 
             case '?':
             {
-                printf("Usage: %s [-c count] [-t mainConfig.temperature (K)]\n", argv[0]);
+                printf("Usage: %s [flags]\n", argv[0]);
                 return 1;
             }
         }

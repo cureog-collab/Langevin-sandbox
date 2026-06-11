@@ -6,7 +6,7 @@ The primary motivation behind this project is to familiarize myself with data-or
 Use Makefile to auto-compile
 ```bash
 make
-./build/Langevin-engine [initial-number-of-particles]
+./build/Langevin-engine [flags]
 ```
 
 ## Controls (Work in Progress)
