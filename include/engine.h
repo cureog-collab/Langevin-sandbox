@@ -13,7 +13,7 @@
 #define WINDOW_WIDTH 1200
 
 // TODO: rethink about MAX_PARTICLE (currently leave it here to test more)
-#define MAX_PARTICLES 5000
+#define MAX_PARTICLES 3000
 #define PARTICLE_SIZE 8
 
 typedef struct {
