@@ -7,34 +7,83 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 
+#include <getopt.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
+#define VALID_FLAGS "c:t:"
+
 int main(int argc, char *argv[])
 {
     // check input command line arguments ================================================
-    uint32_t initialCount = 20;
-    if (argc == 2) 
+    uint16_t initialCount = 20;
+    float temperature = 4.2; // default: critical temp for He
+    int opt;
+    while ((opt = getopt(argc, argv, VALID_FLAGS)) != -1)
     {
-        int inputInitialCount = atoi(argv[1]);
-        if (inputInitialCount > MAX_PARTICLES)
+        switch (opt)
         {
-            printf("Error: numbers of particles cannot be greater than %i!\n", MAX_PARTICLES);
-            return 1;
+            case 't':
+            {
+                char *endptr = NULL;
+                float inputTemperature = strtof(optarg, &endptr);
+                if (endptr == optarg || *endptr != '\0') 
+                {
+                    printf("Error: temperature (K) must be a real number between 0 and %i!\n", MAX_SUPERCONDUCTING_TEMPERATURE);
+                    return 1;
+                }
+                if (inputTemperature > MAX_SUPERCONDUCTING_TEMPERATURE)
+                {
+                    printf("Warning: temperature %.1f K exceeds the superconductivity threshold!\nAutomatically set to %i K.\n",
+                            inputTemperature, MAX_SUPERCONDUCTING_TEMPERATURE);
+                    temperature = MAX_SUPERCONDUCTING_TEMPERATURE;
+                }
+                else if (inputTemperature < 0)
+                {
+                    printf("Warning: temperature cannot be negative!\nAutomatically set to 0 K.\n");
+                    temperature = 0;
+                }
+                else
+                {
+                    temperature = inputTemperature;
+                }
+                break;
+            }  
+            
+            case 'c':
+            {
+                char *endptr = NULL;
+                int inputCount = strtol(optarg, &endptr, 10);
+                if (endptr == optarg || *endptr != '\0') 
+                {
+                    printf("Error: numbers of particles must be an integer between 0 and %i!\n", MAX_PARTICLES);
+                    return 1;
+                }
+                if (inputCount > MAX_PARTICLES)
+                {
+                    printf("Warning: numbers of particles cannot be greater than %i!\nAutomatically set to %i.\n", 
+                            MAX_PARTICLES, MAX_PARTICLES);
+                    initialCount = MAX_PARTICLES;
+                }
+                else if (inputCount < 0)
+                {
+                    printf("Warning: numbers of particles cannot be negative!\nAutomatically set to 20.\n");
+                }
+                else
+                {
+                    initialCount = (uint16_t)inputCount;
+                }
+                break;
+            }
+
+            case '?':
+            {
+                printf("Usage: %s [-c count] [-t temperature (K)]\n", argv[0]);
+                return 1;
+            }
         }
-        else if (inputInitialCount < 0)
-        {
-            printf("Error: numbers of particles cannot be negative!\n");
-            return 1;
-        }
-        initialCount = inputInitialCount;
-    }
-    else if (argc > 2)
-    {
-        printf("Usage: %s [initialCount]\n", argv[0]);
-        return 1;
     }
 
     // intialize the engine ===============================================================
@@ -44,10 +93,12 @@ int main(int argc, char *argv[])
         printf("Error: failed to SDL_Init!\n");
         return 1;
     }
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
     SDL_Window *mainWindow = NULL;
     SDL_Renderer *mainRenderer = NULL;
     SDL_Texture *particleTexture = NULL;
-    if (!initSDLGraphics(&mainWindow, &mainRenderer, &particleTexture, PARTICLE_SIZE, PARTICLE_SIZE))
+    if (!initSDLGraphics(&mainWindow, &mainRenderer, &particleTexture))
     {
         printf("Error: failed to initiate mainWindow and mainRenderer!\n");
         return 1;
@@ -115,6 +166,7 @@ int main(int argc, char *argv[])
         {
             // TODO
             // physics stuff
+            updatePhysics(mainParticleSys, temperature);
         }
 
         // TODO

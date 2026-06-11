@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **texture, int textureW, int textureH)
+bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **texture)
 {
     // initiate stuff
     *window = SDL_CreateWindow("Langevin simulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -25,7 +25,7 @@ bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture *
         return false;
     }
     *texture = SDL_CreateTexture(*renderer, SDL_PIXELFORMAT_RGBA8888,
-                        SDL_TEXTUREACCESS_STREAMING, textureW, textureH);
+                        SDL_TEXTUREACCESS_STREAMING, PARTICLE_SIZE, PARTICLE_SIZE);
     if (*texture == NULL)
     {
         printf("Error: failed to genereate texture!\n");
@@ -35,7 +35,7 @@ bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture *
     
     // paint a particle
     // malloc a buffer for color
-    uint32_t *pixels = malloc(textureW * textureH * sizeof(uint32_t));
+    uint32_t *pixels = malloc(PARTICLE_SIZE * PARTICLE_SIZE * sizeof(uint32_t));
     if (pixels == NULL)
     {
         printf("Error: failed to malloc for pixels!\n");
@@ -43,26 +43,25 @@ bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture *
     }
 
     // find the particle's center
-    float centerX = textureW / 2.0f;
-    float centerY = textureH / 2.0f;
-    float particleRadius = centerX;
+    float centerPos = (PARTICLE_SIZE - 1.0f) / 2.0f;
+    float particleRadius = centerPos;
 
     // paint the whole particle
-    for (int y = 0; y < textureH; y++)
+    for (int y = 0; y < PARTICLE_SIZE; y++)
     {
-        for (int x = 0; x < textureW; x++)
+        for (int x = 0; x < PARTICLE_SIZE; x++)
         {
-            float dst = hypotf(x - centerX, y - centerY);
+            float dst = hypotf(x - centerPos, y - centerPos);
 
             // hash
-            int hashIndex = y * textureW + x;
+            int hashIndex = y * PARTICLE_SIZE + x;
 
             pixels[hashIndex] = (dst <= particleRadius) ? 0xF9F8F6FF : 0x00000000;
         }
     }
 
     // pump to VRAM and free the color buffer
-    SDL_UpdateTexture(*texture, NULL, pixels, textureW * sizeof(uint32_t));
+    SDL_UpdateTexture(*texture, NULL, pixels, PARTICLE_SIZE * sizeof(uint32_t));
     free(pixels);
     return true;
 }

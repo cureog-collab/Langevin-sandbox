@@ -10,7 +10,7 @@
 const float PANSCALE = 0.8f;
 const float ZOOMSCALE = 1.1f;
 
-const float MAXZOOM = 500.0f;
+const float MAXZOOM = 100.0f;
 const float MINZOOM = 1.0f;
 
 void clampCamera(camera *cam);

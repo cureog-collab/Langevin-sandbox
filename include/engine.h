@@ -13,12 +13,14 @@
 #define WINDOW_WIDTH 1200
 
 // TODO: rethink about MAX_PARTICLE (currently leave it here to test more)
-#define MAX_PARTICLES 3000
+#define MAX_PARTICLES 4000
 #define PARTICLE_SIZE 8
 
+#define MAX_SUPERCONDUCTING_TEMPERATURE 150
+
 typedef struct {
-    uint32_t capacity;
-    uint32_t count;
+    uint16_t capacity;
+    uint16_t count;
     float *pX;
     float *pY;
 } particleSystem;
@@ -28,10 +30,10 @@ particleSystem *initParticleSys(uint32_t inputCap);
 void destroyParticleSys(particleSystem *pSystem);
 
 // simulate the physics
-bool updatePhysics(particleSystem *system, float temperature);
+void updatePhysics(particleSystem *system, float temperature);
 
 // render stuff
-bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **texture, int textureW, int textureH);
+bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **texture);
 bool renderParticles(SDL_Renderer *renderer, SDL_Texture *texture, particleSystem *system, camera *cam);
 
 void destroyAllSDL(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture);
