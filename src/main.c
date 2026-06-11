@@ -13,13 +13,19 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define VALID_FLAGS "c:t:"
+#define VALID_FLAGS "c:t:x:y:"
 
 int main(int argc, char *argv[])
 {
-    // check input command line arguments ================================================
+    // default values ===================================================================
     uint16_t initialCount = 20;
-    float temperature = 4.2; // default: critical temp for He
+    simConfig mainConfig = {
+        4.2f, // K
+        0.0f, // (x10^3)A/m2
+        1.0f // (x10^3)A/m2
+    };
+
+    // check input command line arguments ================================================
     int opt;
     while ((opt = getopt(argc, argv, VALID_FLAGS)) != -1)
     {
@@ -31,23 +37,23 @@ int main(int argc, char *argv[])
                 float inputTemperature = strtof(optarg, &endptr);
                 if (endptr == optarg || *endptr != '\0') 
                 {
-                    printf("Error: temperature (K) must be a real number between 0 and %i!\n", MAX_SUPERCONDUCTING_TEMPERATURE);
+                    printf("Error: mainConfig.temperature (K) must be a real number between 0 and %i!\n", MAX_SUPERCONDUCTING_TEMPERATURE);
                     return 1;
                 }
                 if (inputTemperature > MAX_SUPERCONDUCTING_TEMPERATURE)
                 {
-                    printf("Warning: temperature %.1f K exceeds the superconductivity threshold!\nAutomatically set to %i K.\n",
+                    printf("Warning: mainConfig.temperature %.1f K exceeds the superconductivity threshold!\nAutomatically set to %i K.\n",
                             inputTemperature, MAX_SUPERCONDUCTING_TEMPERATURE);
-                    temperature = MAX_SUPERCONDUCTING_TEMPERATURE;
+                    mainConfig.temperature = MAX_SUPERCONDUCTING_TEMPERATURE;
                 }
-                else if (inputTemperature < 0)
+                else if (inputTemperature < 0.0f)
                 {
-                    printf("Warning: temperature cannot be negative!\nAutomatically set to 0 K.\n");
-                    temperature = 0;
+                    printf("Warning: mainConfig.temperature cannot be negative!\nAutomatically set to 0 K.\n");
+                    mainConfig.temperature = 0;
                 }
                 else
                 {
-                    temperature = inputTemperature;
+                    mainConfig.temperature = inputTemperature;
                 }
                 break;
             }  
@@ -78,9 +84,53 @@ int main(int argc, char *argv[])
                 break;
             }
 
+            case 'x':
+            {
+                char *endptr = NULL;
+                float inputJx = strtof(optarg, &endptr);
+                if (endptr == optarg || *endptr != '\0') 
+                {
+                    printf("Error: current density Jx (unit: x10^3 A/m^2) must be a float between 0 and %i!\n", MAX_CURRENT_DENSITY);
+                    return 1;
+                }
+                if (fabsf(inputJx) > MAX_CURRENT_DENSITY)
+                {
+                    printf("Warning: current density Jx cannot be greater than %ix10^3 A/m^2!\nAutomatically set to %i.\n", 
+                            MAX_CURRENT_DENSITY, MAX_CURRENT_DENSITY);
+                    mainConfig.Jx = MAX_CURRENT_DENSITY;
+                }
+                else
+                {
+                    mainConfig.Jx = inputJx;
+                }
+                break;
+            }
+
+            case 'y':
+            {
+                char *endptr = NULL;
+                float inputJy = strtof(optarg, &endptr);
+                if (endptr == optarg || *endptr != '\0') 
+                {
+                    printf("Error: current density Jy (unit: x10^3 A/m^2) must be a float between 0 and %i!\n", MAX_CURRENT_DENSITY);
+                    return 1;
+                }
+                if (fabsf(inputJy) > MAX_CURRENT_DENSITY)
+                {
+                    printf("Warning: current density Jy cannot be greater than %ix10^3 A/m^2!\nAutomatically set to %i.\n", 
+                            MAX_CURRENT_DENSITY, MAX_CURRENT_DENSITY);
+                    mainConfig.Jy = MAX_CURRENT_DENSITY;
+                }
+                else
+                {
+                    mainConfig.Jy = inputJy;
+                }
+                break;
+            }
+
             case '?':
             {
-                printf("Usage: %s [-c count] [-t temperature (K)]\n", argv[0]);
+                printf("Usage: %s [-c count] [-t mainConfig.temperature (K)]\n", argv[0]);
                 return 1;
             }
         }
@@ -166,7 +216,7 @@ int main(int argc, char *argv[])
         {
             // TODO
             // physics stuff
-            updatePhysics(mainParticleSys, temperature);
+            updatePhysics(mainParticleSys, &mainConfig);
         }
 
         // TODO

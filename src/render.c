@@ -105,9 +105,9 @@ bool renderParticles(SDL_Renderer *renderer, SDL_Texture *texture, particleSyste
     }
 
     // move the particles
-    for (uint32_t i = 0; i < system->count; i++)
+    for (uint16_t i = 0; i < system->count; i++)
     {
-        uint32_t vIdx = i * 4;
+        uint16_t vIdx = i * 4;
 
         float worldX = system->pX[i];
         float worldY = system->pY[i];
