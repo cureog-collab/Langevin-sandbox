@@ -19,10 +19,11 @@ make
 * 'CTRL' + left-click to annihilate a defect under the cursor.
 
 ## Flags
-* -c **(Initial Particle Count)**: The number of vortices generated at startup.
+* -c **(Initial particle count)**: The number of vortices generated at startup.
+* -d **(Initial defect count)**: The number of defects generated at startup.
 * -t **(Temperature (K))**: Pseudo-temperature (drives the Brownian motion).
-* -x **(Current Density Jx (x10³ A/m²))**: Pseudo-current density along the X-axis (generates a vertical Lorentz force on the vortices)
-* -y **(Current Density Jy (x10³ A/m²))**: Pseudo-current density along the Y-axis (generates a horizontal Lorentz force on the vortices).
+* -x **(Current density Jx (x10³ A/m²))**: Pseudo-current density along the X-axis (generates a vertical Lorentz force on the vortices)
+* -y **(Current density Jy (x10³ A/m²))**: Pseudo-current density along the Y-axis (generates a horizontal Lorentz force on the vortices).
 
 ## Dependencies
 * **SDL2**
