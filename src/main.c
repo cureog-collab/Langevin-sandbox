@@ -21,12 +21,12 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     // default values =====================================================================
-    uint16_t initialParticleCount = 20;
-    uint16_t initialDefectCount = 5;
+    uint16_t initialParticleCount = 40;
+    uint16_t initialDefectCount = 8;
     simConfig mainConfig = {
         4.2f, // K
         0.0f, // (x10^3)A/m2
-        1.0f // (x10^3)A/m2
+        1.5f // (x10^3)A/m2
     };
     // =====================================================================================
 

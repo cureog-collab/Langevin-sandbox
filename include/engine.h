@@ -10,24 +10,27 @@
 #include <stdint.h>
 
 #define WINDOW_HEIGHT 900
-#define WINDOW_WIDTH 1200
+#define WINDOW_WIDTH 1500
 
 #define CLICK_RADIUS 20.0f
 
-#define MAX_DEFECTS 1000
+#define MAX_DEFECTS 400
 #define DEFECT_SIZE 32
-#define GRID_CELL_SIZE 4.0f
-#define INV_GRID_CELL_SIZE 0.25f
-#define DEFECT_FORCE 0.8f
+#define GRID_CELL_SIZE 2.0f
+#define INV_GRID_CELL_SIZE 0.5f
+#define DEFECT_FORCE 0.9f
 #define DEFECT_ALPHA 0.005f
-#define MAX_DEFECT_FORCE 5.0f
+#define MAX_DEFECT_FORCE 8.0f
 
 // TODO: rethink about MAX_PARTICLE (currently leave it here to test more)
-#define MAX_PARTICLES 2000
+#define MAX_PARTICLES 700
 #define PARTICLE_SIZE 20
+#define LONDON_LEN 42
+#define COHERENT_LEN 14
+#define CUTOF_P_TO_P_INTERACTION_LEN 400
 
-#define MAX_SUPERCONDUCTING_TEMPERATURE 50 // K
-#define MAX_CURRENT_DENSITY 50 // (x10^3) A/m2
+#define MAX_SUPERCONDUCTING_TEMPERATURE 80 // K
+#define MAX_CURRENT_DENSITY 7 // (x10^3) A/m2
 
 typedef struct {
     float *pX;
