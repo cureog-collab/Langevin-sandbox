@@ -69,7 +69,7 @@ void destroyDefectSys(defectSystem *pDefectSys);
 void destroyForceGrid(forceGrid *grid);
 
 void createDefect(defectSystem *pDefectSys, float x, float y);
-void annhilateDefect(defectSystem *pDefectSys, float x, float y);
+void annihilateDefect(defectSystem *pDefectSys, float x, float y);
 
 // simulate the physics
 void updatePhysics(particleSystem *system, const simConfig *config);

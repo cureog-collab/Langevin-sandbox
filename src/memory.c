@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <wchar.h>
 
 // particle =================================================================================================
@@ -219,6 +220,41 @@ void destroyForceGrid(forceGrid *grid)
     free(grid);
 }
 
-// void createDefect(defectSystem *pDefectSys, float x, float y);
-// void annhilateDefect(defectSystem *pDefectSys, float x, float y);
+void createDefect(defectSystem *pDefectSys, float x, float y)
+{
+    uint16_t currCount = pDefectSys->count;
+    if (currCount >= MAX_PARTICLES)
+    {
+        return;
+    }
+    pDefectSys->pX[currCount] = x;
+    pDefectSys->pY[currCount] = y;
+    pDefectSys->count++;
+}
+void annihilateDefect(defectSystem *pDefectSys, float x, float y)
+{
+    uint16_t currCount = pDefectSys->count;
+    if (currCount == 0)
+    {
+        return;
+    }
+
+    // detect if the mouse clicked on any particle
+    for (uint16_t i = 0; i < currCount; i++)
+    {
+        float dstToMouse = hypotf(pDefectSys->pX[i] - x, pDefectSys->pY[i] - y);
+
+        // if detected a "victim"
+        if (dstToMouse <= CLICK_RADIUS)
+        {
+            uint16_t newCount = pDefectSys->count - 1;
+            
+            pDefectSys->pX[i] = pDefectSys->pX[newCount];
+            pDefectSys->pY[i] = pDefectSys->pY[newCount];
+            pDefectSys->count--;
+            
+            return;
+        }
+    }
+}
 // defect ===================================================================================================

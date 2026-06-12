@@ -15,6 +15,8 @@ make
 * Press 'S' to pause/ resume the simulation.
 * Right-click to spawn a new particle at the cursor's location.
 * 'CTRL' + right-click to annihilate a particle under the cursor.
+* Left-click to spawn a new defect at the cursor's location.
+* 'CTRL' + left-click to annihilate a defect under the cursor.
 
 ## Flags
 * -c **(Initial Particle Count)**: The number of vortices generated at startup.

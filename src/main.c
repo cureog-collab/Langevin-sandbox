@@ -236,13 +236,15 @@ int main(int argc, char *argv[])
 
                 case SDL_MOUSEBUTTONDOWN:
                 {
+                    int mouseX = mainEvent.button.x;
+                    int mouseY = mainEvent.button.y;
+
+                    float worldX = (mouseX - mainCam.camPos.x) / mainCam.zoom;
+                    float worldY = (mouseY - mainCam.camPos.y) / mainCam.zoom;
+
+                    // create/ annihilate particles
                     if (mainEvent.button.button == SDL_BUTTON_RIGHT)
                     {
-                        int mouseX = mainEvent.button.x;
-                        int mouseY = mainEvent.button.y;
-
-                        float worldX = (mouseX - mainCam.camPos.x) / mainCam.zoom;
-                        float worldY = (mouseY - mainCam.camPos.y) / mainCam.zoom;
                         if (SDL_GetModState() & KMOD_CTRL)
                         {
                             annihilateParticle(mainParticleSys, worldX, worldY);
@@ -251,6 +253,21 @@ int main(int argc, char *argv[])
                         else
                         {
                             createParticle(mainParticleSys, worldX, worldY);
+                            break;
+                        }
+                    }
+
+                    // create/ annihilate defects
+                    if (mainEvent.button.button == SDL_BUTTON_LEFT)
+                    {
+                        if (SDL_GetModState() & KMOD_CTRL)
+                        {
+                            annihilateDefect(mainDefectSys, worldX, worldY);
+                            break;
+                        }
+                        else
+                        {
+                            createDefect(mainDefectSys, worldX, worldY);
                             break;
                         }
                     }
