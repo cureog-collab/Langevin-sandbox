@@ -10,11 +10,11 @@
 #include <stdint.h>
 
 #define WINDOW_HEIGHT 900
-#define WINDOW_WIDTH 1500
+#define WINDOW_WIDTH 1600
 
 #define CLICK_RADIUS 20.0f
 
-#define MAX_DEFECTS 400
+#define MAX_DEFECTS 500
 #define DEFECT_SIZE 32
 #define GRID_CELL_SIZE 2.0f
 #define INV_GRID_CELL_SIZE 0.5f
@@ -23,11 +23,11 @@
 #define MAX_DEFECT_FORCE 8.0f
 
 // TODO: rethink about MAX_PARTICLE (currently leave it here to test more)
-#define MAX_PARTICLES 700
+#define MAX_PARTICLES 750
 #define PARTICLE_SIZE 20
 #define LONDON_LEN 42
 #define COHERENT_LEN 14
-#define CUTOF_P_TO_P_INTERACTION_LEN 400
+#define CUTOF_P_TO_P_INTERACTION_LEN 500
 
 #define MAX_SUPERCONDUCTING_TEMPERATURE 80 // K
 #define MAX_CURRENT_DENSITY 7 // (x10^3) A/m2
@@ -72,8 +72,8 @@ void updateForceGrid(forceGrid *grid, const defectSystem *pDefectSys);
 void destroyDefectSys(defectSystem *pDefectSys);
 void destroyForceGrid(forceGrid *grid);
 
-void createDefect(defectSystem *pDefectSys, float x, float y);
-void annihilateDefect(defectSystem *pDefectSys, float x, float y);
+void createDefect(forceGrid *pForceGrid, defectSystem *pDefectSys, float x, float y);
+void annihilateDefect(forceGrid *pForceGrid, defectSystem *pDefectSys, float x, float y);
 
 // simulate the physics
 void updatePhysics(particleSystem *particleSys, forceGrid *defectForceGrid, const simConfig *config);

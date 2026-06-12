@@ -216,7 +216,7 @@ static SDL_Texture *paintGradientTexture(SDL_Renderer *renderer, uint8_t targetS
             if (dist <= radius)
             {
                 float alphaFactor = 1.0f - (dist / radius);
-                uint8_t alpha = (uint8_t)(255.0f * powf(alphaFactor, 0.8f));
+                uint8_t alpha = (uint8_t)(255.0f * powf(alphaFactor, 1.8f));
                 pixels[pixelIndex] = (r << 24) | (g << 16) | (b << 8) | alpha;
             }
             else

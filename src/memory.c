@@ -220,7 +220,7 @@ void destroyForceGrid(forceGrid *grid)
     free(grid);
 }
 
-void createDefect(defectSystem *pDefectSys, float x, float y)
+void createDefect(forceGrid *pForceGrid, defectSystem *pDefectSys, float x, float y)
 {
     uint16_t currCount = pDefectSys->count;
     if (currCount == MAX_DEFECTS)
@@ -230,8 +230,9 @@ void createDefect(defectSystem *pDefectSys, float x, float y)
     pDefectSys->pX[currCount] = x;
     pDefectSys->pY[currCount] = y;
     pDefectSys->count++;
+    updateForceGrid(pForceGrid, pDefectSys);
 }
-void annihilateDefect(defectSystem *pDefectSys, float x, float y)
+void annihilateDefect(forceGrid *pForceGrid, defectSystem *pDefectSys, float x, float y)
 {
     uint16_t currCount = pDefectSys->count;
     if (currCount == 0)
@@ -252,6 +253,7 @@ void annihilateDefect(defectSystem *pDefectSys, float x, float y)
             pDefectSys->pX[i] = pDefectSys->pX[newCount];
             pDefectSys->pY[i] = pDefectSys->pY[newCount];
             pDefectSys->count--;
+            updateForceGrid(pForceGrid, pDefectSys);
             return;
         }
     }

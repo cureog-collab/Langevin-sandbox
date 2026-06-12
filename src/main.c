@@ -302,14 +302,12 @@ int main(int argc, char *argv[])
                     {
                         if (SDL_GetModState() & KMOD_CTRL)
                         {
-                            annihilateDefect(mainDefectSys, worldX, worldY);
-                            updateForceGrid(mainDefectForceGrid, mainDefectSys);
+                            annihilateDefect(mainDefectForceGrid, mainDefectSys, worldX, worldY);
                             break;
                         }
                         else
                         {
-                            createDefect(mainDefectSys, worldX, worldY);
-                            updateForceGrid(mainDefectForceGrid, mainDefectSys);
+                            createDefect(mainDefectForceGrid, mainDefectSys, worldX, worldY);
                             break;
                         }
                     }
