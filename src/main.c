@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define VALID_FLAGS "c:t:x:y:"
+#define VALID_FLAGS "c:d:t:x:y:"
 
 int main(int argc, char *argv[])
 {
@@ -80,11 +80,37 @@ int main(int argc, char *argv[])
                 }
                 else if (inputCount < 0)
                 {
-                    printf("Warning: numbers of particles cannot be negative!\nAutomatically set to 20.\n");
+                    printf("Warning: numbers of particles cannot be negative!\nAutomatically set to %i.\n", initialParticleCount);
                 }
                 else
                 {
                     initialParticleCount = (uint16_t)inputCount;
+                }
+                break;
+            }
+
+            case 'd':
+            {
+                char *endptr = NULL;
+                int inputCount = strtol(optarg, &endptr, 10);
+                if (endptr == optarg || *endptr != '\0') 
+                {
+                    printf("Error: numbers of defects must be an integer between 0 and %i!\n", MAX_DEFECTS);
+                    return 1;
+                }
+                if (inputCount > MAX_DEFECTS)
+                {
+                    printf("Warning: numbers of defects cannot be greater than %i!\nAutomatically set to %i.\n", 
+                            MAX_DEFECTS, MAX_DEFECTS);
+                    initialDefectCount = MAX_DEFECTS;
+                }
+                else if (inputCount < 0)
+                {
+                    printf("Warning: numbers of defects cannot be negative!\nAutomatically set to %i.\n", initialDefectCount);
+                }
+                else
+                {
+                    initialDefectCount = (uint16_t)inputCount;
                 }
                 break;
             }
@@ -199,6 +225,20 @@ int main(int argc, char *argv[])
     }
     // =====================================================================================
 
+    // initialize defect force grid ========================================================
+    forceGrid *mainDefectForceGrid = initForceGrid(mainDefectSys);
+    if (mainDefectForceGrid == NULL)
+    {
+        destroyDefectSys(mainDefectSys);
+        destroyParticleSys(mainParticleSys);
+        SDL_DestroyRenderer(mainRenderer);
+        SDL_DestroyWindow(mainWindow);
+        printf("Error: failed to generate mainDefectForceGrid!\n");
+        SDL_Quit();
+        return 1;
+    }
+    // =====================================================================================
+
     // main program loop ===================================================================
     camera mainCam;
     SDL_Point origin = {0, 0};
@@ -263,26 +303,27 @@ int main(int argc, char *argv[])
                         if (SDL_GetModState() & KMOD_CTRL)
                         {
                             annihilateDefect(mainDefectSys, worldX, worldY);
+                            updateForceGrid(mainDefectForceGrid, mainDefectSys);
                             break;
                         }
                         else
                         {
                             createDefect(mainDefectSys, worldX, worldY);
+                            updateForceGrid(mainDefectForceGrid, mainDefectSys);
                             break;
                         }
                     }
                     break;
                 }
             }
-
-            moveCameraByKeys(&mainCam);
             updateViewport(&mainCam, &mainEvent);
         }
+        moveCameraByKeys(&mainCam);
         
         if (!isPausing)
         {
             // physics stuff
-            updatePhysics(mainParticleSys, &mainConfig);
+            updatePhysics(mainParticleSys, mainDefectForceGrid,&mainConfig);
         }
 
         // graphic stuff
@@ -297,9 +338,10 @@ int main(int argc, char *argv[])
         SDL_Delay(16);
     }
 
+    destroyForceGrid(mainDefectForceGrid);
     destroyDefectSys(mainDefectSys);
     destroyParticleSys(mainParticleSys);
-    destroyAllSDL(mainWindow, mainRenderer, particleTexture);
+    destroyAllSDL(mainWindow, mainRenderer, particleTexture, defectTexture);
     SDL_Quit();
     return 0;
 }

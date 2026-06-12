@@ -135,7 +135,7 @@ forceGrid* initForceGrid(const defectSystem *pDefectSys)
     // numbers of cols and rows
     pResultSys->cols = WINDOW_WIDTH * INV_GRID_CELL_SIZE;
     pResultSys->rows = WINDOW_HEIGHT * INV_GRID_CELL_SIZE;
-    uint16_t totNodes = pResultSys->cols * pResultSys->rows;
+    uint32_t totNodes = pResultSys->cols * pResultSys->rows;
 
     // allocate memory for storing force information at each node
     pResultSys->forceX = calloc(totNodes, sizeof(float));
@@ -169,9 +169,9 @@ forceGrid* initForceGrid(const defectSystem *pDefectSys)
 
 void updateForceGrid(forceGrid *pforceGrid, const defectSystem *pDefectSys)
 {
-    for (uint16_t row = 0; row < pforceGrid->rows; row++)
+    for (uint32_t row = 0; row < pforceGrid->rows; row++)
     {
-        for (uint16_t col = 0; col < pforceGrid->cols; col++)
+        for (uint32_t col = 0; col < pforceGrid->cols; col++)
         {
             float coordY = row * GRID_CELL_SIZE;
             float coordX = col * GRID_CELL_SIZE;
@@ -193,8 +193,8 @@ void updateForceGrid(forceGrid *pforceGrid, const defectSystem *pDefectSys)
 
             // hash
             int gridIdx = row * pforceGrid->cols + col;
-            pforceGrid->forceX[gridIdx] += addForceX;
-            pforceGrid->forceY[gridIdx] += addForceY;
+            pforceGrid->forceX[gridIdx] = fmaxf(-MAX_DEFECT_FORCE, fminf(MAX_DEFECT_FORCE, addForceX));
+            pforceGrid->forceY[gridIdx] = fmaxf(-MAX_DEFECT_FORCE, fminf(MAX_DEFECT_FORCE, addForceY));
         }
     }
 }
@@ -223,7 +223,7 @@ void destroyForceGrid(forceGrid *grid)
 void createDefect(defectSystem *pDefectSys, float x, float y)
 {
     uint16_t currCount = pDefectSys->count;
-    if (currCount >= MAX_PARTICLES)
+    if (currCount == MAX_DEFECTS)
     {
         return;
     }
@@ -252,7 +252,6 @@ void annihilateDefect(defectSystem *pDefectSys, float x, float y)
             pDefectSys->pX[i] = pDefectSys->pX[newCount];
             pDefectSys->pY[i] = pDefectSys->pY[newCount];
             pDefectSys->count--;
-            
             return;
         }
     }

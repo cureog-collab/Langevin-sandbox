@@ -29,7 +29,7 @@ bool initSDLGraphics(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture *
     }
 
     // paint particle texture
-    *particleTexture = paintGradientTexture(*renderer, PARTICLE_SIZE, 10, 25, 45);
+    *particleTexture = paintGradientTexture(*renderer, PARTICLE_SIZE, 10, 25, 30);
     if (*particleTexture == NULL)
     {
         SDL_DestroyRenderer(*renderer);
@@ -171,9 +171,10 @@ bool renderDefects(SDL_Renderer *renderer, SDL_Texture *texture, defectSystem *s
     return true;
 }
 
-void destroyAllSDL(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *texture)
+void destroyAllSDL(SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *particleTexture, SDL_Texture *defectTexture)
 {
-    SDL_DestroyTexture(texture);
+    SDL_DestroyTexture(defectTexture);
+    SDL_DestroyTexture(particleTexture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 }
