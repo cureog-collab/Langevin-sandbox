@@ -21,7 +21,8 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     // default values =====================================================================
-    uint16_t initialCount = 20;
+    uint16_t initialParticleCount = 20;
+    uint16_t initialDefectCount = 5;
     simConfig mainConfig = {
         4.2f, // K
         0.0f, // (x10^3)A/m2
@@ -75,7 +76,7 @@ int main(int argc, char *argv[])
                 {
                     printf("Warning: numbers of particles cannot be greater than %i!\nAutomatically set to %i.\n", 
                             MAX_PARTICLES, MAX_PARTICLES);
-                    initialCount = MAX_PARTICLES;
+                    initialParticleCount = MAX_PARTICLES;
                 }
                 else if (inputCount < 0)
                 {
@@ -83,7 +84,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    initialCount = (uint16_t)inputCount;
+                    initialParticleCount = (uint16_t)inputCount;
                 }
                 break;
             }
@@ -153,7 +154,8 @@ int main(int argc, char *argv[])
     SDL_Window *mainWindow = NULL;
     SDL_Renderer *mainRenderer = NULL;
     SDL_Texture *particleTexture = NULL;
-    if (!initSDLGraphics(&mainWindow, &mainRenderer, &particleTexture))
+    SDL_Texture *defectTexture = NULL;
+    if (!initSDLGraphics(&mainWindow, &mainRenderer, &particleTexture, &defectTexture))
     {
         printf("Error: failed to initiate mainWindow and mainRenderer!\n");
         return 1;
@@ -161,7 +163,7 @@ int main(int argc, char *argv[])
     // ====================================================================================
 
     // initialize system of particles =====================================================
-    particleSystem *mainParticleSys = initParticleSys(MAX_PARTICLES);
+    particleSystem *mainParticleSys = initParticleSys();
     if (mainParticleSys == NULL)
     {
         SDL_DestroyRenderer(mainRenderer);
@@ -170,11 +172,30 @@ int main(int argc, char *argv[])
         SDL_Quit();
         return 1;
     }
-    for (uint32_t i = 0; i < initialCount; i++)
+    for (uint16_t i = 0; i < initialParticleCount; i++)
     {
         mainParticleSys->pX[i] = ((float)rand() / RAND_MAX) * WINDOW_WIDTH;
         mainParticleSys->pY[i] = ((float)rand() / RAND_MAX) * WINDOW_HEIGHT;
         mainParticleSys->count++;
+    }
+    // =====================================================================================
+
+    // initialize system of defects ========================================================
+    defectSystem *mainDefectSys = initDefectSys();
+    if (mainDefectSys == NULL)
+    {
+        destroyParticleSys(mainParticleSys);
+        SDL_DestroyRenderer(mainRenderer);
+        SDL_DestroyWindow(mainWindow);
+        printf("Error: failed to generate mainDefectSys!\n");
+        SDL_Quit();
+        return 1;
+    }
+    for (uint16_t i = 0; i < initialDefectCount; i++)
+    {
+        mainDefectSys->pX[i] = ((float)rand() / RAND_MAX) * WINDOW_WIDTH;
+        mainDefectSys->pY[i] = ((float)rand() / RAND_MAX) * WINDOW_HEIGHT;
+        mainDefectSys->count++;
     }
     // =====================================================================================
 
@@ -206,7 +227,7 @@ int main(int argc, char *argv[])
                     }
 
                     // pause the simulation
-                    else if (mainEvent.key.keysym.sym == SDLK_s)
+                    else if (mainEvent.key.keysym.sym == SDLK_r)
                     {
                         isPausing = !isPausing;
                     }
@@ -237,9 +258,10 @@ int main(int argc, char *argv[])
                 }
             }
 
+            moveCameraByKeys(&mainCam);
             updateViewport(&mainCam, &mainEvent);
         }
-
+        
         if (!isPausing)
         {
             // physics stuff
@@ -250,6 +272,7 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawColor(mainRenderer, 145, 205, 235, 255); 
         SDL_RenderClear(mainRenderer);
 
+        renderDefects(mainRenderer, defectTexture, mainDefectSys, &mainCam);
         renderParticles(mainRenderer, particleTexture, mainParticleSys, &mainCam);
 
         SDL_RenderPresent(mainRenderer);
@@ -257,6 +280,7 @@ int main(int argc, char *argv[])
         SDL_Delay(16);
     }
 
+    destroyDefectSys(mainDefectSys);
     destroyParticleSys(mainParticleSys);
     destroyAllSDL(mainWindow, mainRenderer, particleTexture);
     SDL_Quit();

@@ -9,8 +9,10 @@
 typedef struct {
     SDL_FPoint camPos;
     float zoom;
-    bool isDragging;
 } camera;
+
+// move camera through arrow keys or ASWD
+void moveCameraByKeys(camera *cam);
 
 // reset the entire viewport to its original zoom scale and position
 void resetCamera(camera *cam, SDL_Point originalPos);

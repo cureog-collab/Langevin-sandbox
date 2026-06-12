@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #define TEMPERATURE_SCALE 0.8f
-#define LORENTZ_SCALE 5.0f
+#define LORENTZ_SCALE 2.0f
 
 const float INV_WINDOW_WIDTH = 1.0f / WINDOW_WIDTH;
 const float INV_WINDOW_HEIGHT = 1.0f / WINDOW_HEIGHT;
