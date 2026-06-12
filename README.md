@@ -10,7 +10,7 @@ make
 ```
 
 ## Controls (Work in Progress)
-* Camera panning and zooming.
+* Move and zomm camera by mouse wheel and arrow keys (or ASWD).
 * Press 'SPACE' to reset camera settings.
 * Press 'S' to pause/ resume the simulation.
 * Right-click to spawn a new particle at the cursor's location.
